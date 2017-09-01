@@ -5,7 +5,6 @@ import (
 	"io/ioutil"
 	"os"
 	"strings"
-	"time"
 
 	"gopkg.in/src-d/go-git.v4"
 	"gopkg.in/src-d/go-git.v4/plumbing"
@@ -18,11 +17,10 @@ type checkRequest struct {
 }
 
 type Source struct {
-	URI        string        `json:"uri"`
-	Branch     string        `json:"branch"`
-	PrivateKey string        `json:"private_key" mapstructure:"private_key"`
-	Pool       string        `json:"pool"`
-	RetryDelay time.Duration `json:"retry_delay" mapstructure:"retry_delay"`
+	URI        string `json:"uri"`
+	Branch     string `json:"branch"`
+	PrivateKey string `json:"private_key"`
+	Pool       string `json:"pool"`
 }
 
 type Version struct {
@@ -45,11 +43,17 @@ func main() {
 		panic(err)
 	}
 
-	repo, err := git.PlainClone(tmpDir, false, &git.CloneOptions{
+	cloneOptions := &git.CloneOptions{
 		URL:      req.Source.URI,
 		Progress: os.Stderr,
 		Depth:    100,
-	})
+	}
+
+	if req.Source.PrivateKey != "" {
+		// cloneOptions.AuthMethod = ssh.NewPublicKeys()
+	}
+
+	repo, err := git.PlainClone(tmpDir, false, cloneOptions)
 	if err != nil {
 		panic(err)
 	}

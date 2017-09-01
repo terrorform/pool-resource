@@ -45,9 +45,8 @@ var _ = BeforeSuite(func() {
 	builtCheck, err = gexec.Build("github.com/concourse/pool-resource/cmd/check")
 	Expect(err).NotTo(HaveOccurred())
 
-	pwd, err := os.Getwd()
+	inPath, err = gexec.Build("github.com/concourse/pool-resource/cmd/in")
 	Expect(err).NotTo(HaveOccurred())
-	inPath = filepath.Join(pwd, "../assets/in")
 })
 
 type version struct {
